@@ -1,6 +1,7 @@
 # datacollection
 
-Educational project. 
+Educational project, I havent invented anything. 
+
 Simple port scanner targeting ports: 22, 2222, 80, 8080, 8081, 20, 25, 53.
 Simple Web Crawler crawls website.
 Simple Web Scraper, scrapes html content.
