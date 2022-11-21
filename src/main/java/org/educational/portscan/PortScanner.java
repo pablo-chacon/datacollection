@@ -1,5 +1,4 @@
-package org.educational;
-
+package org.educational.portscan;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,22 +13,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PortScanner {
 
-    public int[] ports = {22, 2222, 80, 8080, 8081, 20, 25, 53};
-
-
-    public PortScanner(String ip) {
+    public List runPortScan(String ip, int nbrPortMaxToScan) throws IOException {
         ConcurrentLinkedQueue openPorts = new ConcurrentLinkedQueue<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(ports.length);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         AtomicInteger port = new AtomicInteger(0);
-        for (int i = 0; i <= ports.length; i++) {
-            final int targetPort = port.getAndIncrement();
+        while (port.get() < nbrPortMaxToScan) {
+            final int currentPort = port.getAndIncrement();
             executorService.submit(() -> {
                 try {
                     Socket socket = new Socket();
-                    socket.connect(new InetSocketAddress(ip, targetPort), 200);
+                    socket.connect(new InetSocketAddress(ip, currentPort), 100);
                     socket.close();
-                    openPorts.add(targetPort);
-                    System.out.println(ip + " ,port open: " + targetPort);
+                    openPorts.add(currentPort);
+                    System.out.println(ip + " ,port open: " + currentPort);
                 } catch (IOException e) {
                     System.err.println(e);
                 }
@@ -42,10 +38,11 @@ public class PortScanner {
             throw new RuntimeException(e);
         }
         List openPortList = new ArrayList<>();
-        System.out.println("Open ports: " + openPorts.size());
+        System.out.println("openPortsQueue: " + openPorts.size());
         while (!openPorts.isEmpty()) {
             openPortList.add(openPorts.poll());
         }
         openPortList.forEach(p -> System.out.println("port " + p + " is open"));
+        return openPortList;
     }
 }

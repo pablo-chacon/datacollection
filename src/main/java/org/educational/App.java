@@ -1,46 +1,58 @@
 package org.educational;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
+
+
+import org.educational.crawler.Crawler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
-    public static void main(String[] args) throws IOException {
 
+
+
+    public static void main(String[] args) {
 
         Crawler crawler = new Crawler();
-        String rootURL = "https://google.com";
+        List<String> hostURLs = new ArrayList<>();
 
-        crawler.Crawl(rootURL, 100);
+        hostURLs.add("https://www.google.com");
+        hostURLs.add("https://www.overthewire.org/wargames/banditlabs/bandit0");
+        hostURLs.add("https://www.cryptocompare.com");
 
-        Scraper scraper = new Scraper();
-        final String htmlContent = scraper.getContent(rootURL);
-        final String extractedTitle = scraper.extractTitle(htmlContent);
-        System.out.println("Scraper: " + extractedTitle);
+        /*for (String s : PortScanner.portScanReport) {
+            System.out.println(s);
+        }*/
 
 
-        String ip = String.valueOf(URL2Ip(rootURL));
-        new PortScanner(ip);
 
-    }
+        for (int i = 0; i < hostURLs.size(); i++) {
+            String host = hostURLs.get(i);
+            crawler.Crawl(host, 100);
+            System.out.println(host);
+            //hostDB.addURL(host);
 
-    public static InetAddress URL2Ip(String rootURL) {
-        InetAddress ip = null;
-        try {
-            // Fetch IP address by getByName()
-            ip = InetAddress.getByName(new URL(rootURL)
-                    .getHost());
-
-            // Print the IP address
-            System.out.println("Public IP Address of: " + ip);
-        } catch (MalformedURLException e) {
-            // It means the URL is invalid
-            System.out.println("Invalid URL");
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
         }
-        return ip;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
 }
+
+
+
+

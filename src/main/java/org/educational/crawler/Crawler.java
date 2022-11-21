@@ -1,4 +1,4 @@
-package org.educational;
+package org.educational.crawler;
 
 
 import java.io.BufferedReader;
@@ -16,6 +16,7 @@ public class Crawler {
 
     private Queue<String> urlQueue;
     private List<String> visitedURLs;
+    private String actualURL;
 
     public Crawler() {
         urlQueue = new LinkedList<>();
@@ -23,7 +24,19 @@ public class Crawler {
     }
 
 
-    public void Crawl(String rootURL, int breakpoint) {
+    public String getActualURL() {
+        return actualURL;
+    }
+
+    public void setActualURL(String actualURL) {
+        this.actualURL = actualURL;
+    }
+
+    public String getUrlQueue() {
+        return String.valueOf(urlQueue);
+    }
+
+    public Queue<String> Crawl(String rootURL, int breakpoint) {
         urlQueue.add(rootURL);
         visitedURLs.add(rootURL);
 
@@ -58,21 +71,23 @@ public class Crawler {
             //Each time the regex matches a URL in the HTML, add to queue for next traverse.
             breakpoint = getBreakpoint(breakpoint, matcher);
 
-            // exit outer loop if breakpoint reached.
+            // exit outer loop if breakpoint is reached.
             if(breakpoint == 0){
                 break;
             }
         }
+        return urlQueue;
     }
 
     private int getBreakpoint(int breakpoint, Matcher matcher) {
         while(matcher.find()){
             String actualURL = matcher.group();
-
-            if(!visitedURLs.contains(actualURL)){
-                visitedURLs.add(actualURL);
-                System.out.println("Crawler URL results: " + actualURL);
-                urlQueue.add(actualURL);
+            setActualURL(actualURL);
+            String targetURL = getActualURL();
+            if(!visitedURLs.contains(targetURL)){
+                visitedURLs.add(getActualURL());
+                System.out.println("Crawler URL results: " + targetURL);
+                urlQueue.add(targetURL);
             }
 
             // exit the loop if it reaches the breakpoint.
